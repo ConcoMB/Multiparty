@@ -1,2 +1,4 @@
 Multiparty
 ==========
+
+Multiparticle systems simulation
