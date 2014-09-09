@@ -1,4 +1,5 @@
 require 'debugger'
+require_relative 'cell'
 
 class Grid
 
@@ -13,7 +14,6 @@ class Grid
   end
 
   def add(particle)
-    # puts "#{(particle.x * @ml).to_i} / #{(particle.y * @ml).to_i}"
     coords = particle_coords(particle)
     @grid[coords[:x]][coords[:y]].add(particle)
   end
