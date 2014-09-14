@@ -1,6 +1,6 @@
 require_relative 'grid'
 
-def find_neighbors(particles, particle_id, r, m, l, brute_force=false, border=false, out_file=nil)
+def find_neighbors(particles, particle_id, r, m, l, brute_force = false, border = false, out_file = nil)
   if brute_force
     # puts 'brute force'
     t1 = Time.now

@@ -1,4 +1,4 @@
-require_relative 'particle'
+require_relative 'tita_particle'
 
 def parse_particles(static_file, dynamic_file)
   # read particles
@@ -8,7 +8,7 @@ def parse_particles(static_file, dynamic_file)
   dynamic_content.each_with_index do |line, i|
     next if i == 0
     pos = line.split(' ')
-    particles << Particle.new(i, pos[0].to_f, pos[1].to_f)
+    particles << TitaParticle.new(i, pos[0].to_f, pos[1].to_f)
   end
   # fill particles
   static_content.each_with_index do |line, i|

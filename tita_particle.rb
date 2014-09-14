@@ -1,4 +1,4 @@
-class Particle
+class TitaParticle
 
   attr_accessor :x, :y, :r, :color, :id, :v, :tita
 
