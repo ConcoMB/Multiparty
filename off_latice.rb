@@ -45,7 +45,7 @@ def off_latice(particles, l, n, r, revs, eta, out_file, verbose)
     calculate_stuff(particles) if verbose
     particles.each do |p|
       p.move(1, l)
-      neigh = find_neighbors(particles, p.id, r, m, l, false, true)
+      neigh = find_neighbors(particles, p.id, r, l, m, false, true)
       p.tita = calculate_tita(p, neigh, interval)
     end
   end

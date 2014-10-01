@@ -1,8 +1,9 @@
 require_relative 'grid'
 
-def find_neighbors(particles, particle_id, r, m, l, brute_force = false, border = false, out_file = nil)
+def find_neighbors(particles, particle_id, r, l, m = nil, brute_force = false, border = false, out_file = nil)
+  return [] if particles.size < 2
+  particle = particles.find { |p| p.id == particle_id }
   if brute_force
-    # puts 'brute force'
     t1 = Time.now
     if particle_id.nil?
       neighbors = particles.map { |p| find_neighbors_brute(particles, particles[p.id - 1], r, border) }
@@ -10,7 +11,6 @@ def find_neighbors(particles, particle_id, r, m, l, brute_force = false, border 
       neighbors = find_neighbors_brute(particles, particles[particle_id - 1], r, border) 
     end
   else
-    # puts 'grid'
     if m
       m = m.to_i
       unless m_is_valid?(m, @l, r)
@@ -18,30 +18,22 @@ def find_neighbors(particles, particle_id, r, m, l, brute_force = false, border 
         return nil
       end
     else 
-      m = infer_m(@l, r)
-      puts "inferred M -> #{m}"
+      m = infer_m(l, r)
+      # puts "inferred M -> #{m}"
     end
-    grid = Grid.new(m, @l)
-    particles.each do |p|
-      grid.add(p)
-    end
+    grid = Grid.new(m, l)
+    particles.each { |p| grid.add(p) }
     t1 = Time.now
     if particle_id.nil?
       neighbors = particles.map { |p| find_neighbors_grid(grid, particles[p.id - 1], r, border) }
     else
-      neighbors = find_neighbors_grid(grid, particles[particle_id - 1], r, border)
+      neighbors = find_neighbors_grid(grid, particle, r, border)
     end
   end
-  if particle_id.nil?
-    # neighbors.each_with_index { |p, i| puts "#{i + 1}: #{p.map{ |n| n.id }.join(', ')}" }
-  else
+  unless particle_id.nil?
     neighbors.sort!{ |a, b| a.id <=> b.id }
-    # neighbors.each { |p| puts "#{p.id == particle_id ? '*' : ' '}#{p}" }
-    generate_output_file(particles, neighbors, particles[p_id - 1], out_file) if out_file
+    generate_output_file(particles, neighbors, particle, out_file) if out_file
   end
-  # puts '======'
-  # puts "Total time elapsed: #{(Time.now - t0)} ms"
-  # puts "Neighbor finding time: #{(t2 - t1)} ms"
   neighbors
 end
 

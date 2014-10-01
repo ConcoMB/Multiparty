@@ -15,6 +15,12 @@ class Grid
 
   def add(particle)
     coords = particle_coords(particle)
+    if @grid[coords[:x]] == nil || @grid[coords[:x]][coords[:y]] == nil 
+      puts particle
+      puts @m
+      puts @l
+      puts coords
+    end
     @grid[coords[:x]][coords[:y]].add(particle)
   end
 
