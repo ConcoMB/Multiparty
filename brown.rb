@@ -10,7 +10,7 @@ L = 0.5
 R1 = 0.005
 M1 = 1
 R2 = 0.05
-M2 = 20
+M2 = 100
 V1_MIN = -0.1
 V1_MAX = 0.1
 V2 = 0
@@ -99,8 +99,7 @@ def find_collisions_particles(particles)
   t = Float::INFINITY
   pairs = []
   particles.each do |p|
-    # def find_neighbors(particles, particle_id, r, l, m = nil, brute_force = false, border = false, out_file = nil)
-    neigh = find_neighbors(particles, p.id, L.to_f / 4, L, nil, true)
+    neigh = particles.select { |q| q != p }
     next if neigh.empty?
     neigh.each do |q|
       next if pairs.any? { |e| (e.a == p && e.b == q) || (e.b == p && e.a == q) }
