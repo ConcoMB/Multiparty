@@ -7,6 +7,13 @@ require_relative 'parsing_utils'
 require_relative 'lennard_dynamics'
 
 opts = parse_opts({})
-particles = (1..opts[:p].to_i).map { LennardJonesParticle.new }
-# particles = [ LennardJonesParticle.new(50, 0.5, 0, 0), LennardJonesParticle.new(0.5, 50, 0, 0) ]
+particles = []
+(1..opts[:p].to_i).each do |i|
+  p = LennardJonesParticle.new(i)
+  while particles.any? { |q| p.distance(q) <= 1 }
+    p = LennardJonesParticle.new(i)
+  end
+  particles << p
+end
+# particles = [ LennardJonesParticle.new(1, 205, 50, -5, 0) ]
 calculate(particles, opts[:n].to_f, opts[:out_file])
