@@ -2,7 +2,8 @@
 require 'byebug'
 require_relative 'harmonic_oscilator_particle'
 
-DELTA_T = 0.01
+DELTA_T = 0.0001
+DELTA_P = 100
 
 DELTA_T_2 = DELTA_T ** 2
 
@@ -16,8 +17,8 @@ DELTA_ORDER_5 = DELTA_T ** 5 / 120
 ALPHA_0 = 0
 ALPHA_1 = 1
 
-
 def calculate(method, n, file_name)
+  @tp = 0
   file = file_name ? File.open(file_name, 'w') : nil 
   particle_old = HarmonicOscilatorParticle.new
   particle_current = do_particle(particle_old, 'euler') 
@@ -40,8 +41,8 @@ end
 def do_particle(p, method, old_p = nil, t = nil)
   case method
   when 'verlet'
-    r = 2 * p.r - old_p.r + DELTA_T_2 / p.m * p.f 
-    v = r - old_p.r / (2 * DELTA_T)
+    r = 2 * p.r - old_p.r + p.a * DELTA_T_2
+    v = (r - old_p.r) / (2 * DELTA_T)
     return HarmonicOscilatorParticle.new(r, v)
   when 'leap'
     v = p.v + DELTA_T * p.f / p.m
@@ -83,6 +84,9 @@ def compute_gear(p)
 end
 
 def print(p, file)
+  @tp += 1
+  return unless @tp == DELTA_P
+  @tp = 0
   if file 
     file.write("#{p.r}\n") 
   else

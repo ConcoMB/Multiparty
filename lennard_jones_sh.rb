@@ -16,4 +16,4 @@ particles = []
   particles << p
 end
 # particles = [ LennardJonesParticle.new(1, 205, 50, -5, 0) ]
-calculate(particles, opts[:n].to_f, opts[:out_file])
+calculate(particles, opts[:n].to_f, opts[:delta_t].to_f, opts[:out_file])

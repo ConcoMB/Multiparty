@@ -4,13 +4,13 @@ class LennardJonesParticle
   attr_accessor :id, :x, :y, :vx, :vy, :m, :fx, :fy
 
   RM = 1.0
-  EPS = 1.0
+  EPS = 2.0
   R = 5.0
   RMIN = 0
   V_D = 10.0
   HEIGHT = 200.0
   WIDTH = 400.0
-  M = 10 ** 1
+  M = 0.1
   MAX_F = 10 ** 5
   D = 0.05
   D2 = D * 2
@@ -30,7 +30,7 @@ class LennardJonesParticle
       self.vy = vy
     end
     if y.nil?
-      self.y = Random.rand(D2..(HEIGHT - D2)) 
+      self.y = Random.rand(2..198) 
     else
       self.y = y
       if self.y > HEIGHT - D
@@ -42,7 +42,7 @@ class LennardJonesParticle
       end
     end
     if x.nil?
-      self.x = Random.rand(D2..((WIDTH / 2) - D2)) 
+      self.x = Random.rand(2..198) 
     else
       self.x = x
       if self.x > WIDTH - D
@@ -64,22 +64,25 @@ class LennardJonesParticle
   def force(particles)
     self.fx = 0
     self.fy = 0
-
+    
     particles.select{ |p| distance(p) < R }.each do |p|
       next if self.id == p.id
-      delta_x = (self.x - p.x)
-      delta_y = (self.y - p.y)
-      self.fx += 12 * EPS / RM * ((RM / delta_x) ** 13 - (RM / delta_x) ** 7)
-      self.fy += 12 * EPS / RM * ((RM / delta_y) ** 13 - (RM / delta_y) ** 7)
+      d = distance(p)
+      delta_x = x - p.x
+      delta_y = y - p.y
+      f = 12 * EPS / RM * ((RM / d) ** 13 - (RM / d) ** 7)
+      angle = Math.atan2(delta_y, delta_x)
+      self.fx += f * Math.cos(angle)
+      self.fy += f * Math.sin(angle)
     end
     
-    self.fx = MAX_F if fx > MAX_F
-    self.fx = - MAX_F if fx < - MAX_F
-    self.fy = MAX_F if fy > MAX_F
-    self.fy = - MAX_F if fy < - MAX_F
+    # self.fx = MAX_F if fx > MAX_F
+    # self.fx = - MAX_F if fx < - MAX_F
+    # self.fy = MAX_F if fy > MAX_F
+    # self.fy = - MAX_F if fy < - MAX_F
 
-    # puts "#{fx} #{fy}"
-    [fx, fy]
+    # # puts "#{fx} #{fy}"
+    # [fx, fy]
   end
 
   def ax
@@ -91,30 +94,15 @@ class LennardJonesParticle
   end
 
   def cynematic
-    m * (vx ** 2) * (vy ** 2) / 2 
+    m * ((vx ** 2) + (vy ** 2)) / 2 
   end
 
   def potential(particles)
     potential = 0
     particles.each do |p|
       next if self.id == p.id
-      delta_x = (self.x - p.x)
-      delta_y = (self.y - p.y)
-      px = 0
-      py = 0
-      px = EPS * ((RM / delta_x) ** 12 - 2 * (RM / delta_x) ** 6) if delta_x.abs < R && delta_x != 0
-      py = EPS * ((RM / delta_y) ** 12 - 2 * (RM / delta_y) ** 6) if delta_y.abs < R && delta_y != 0 
-      # if px > 0
-      #   px = [px, MAX_F].min
-      # else 
-      #   px = [px, - MAX_F].max
-      # end
-      # if py > 0
-      #   py = [py, MAX_F].min
-      # else 
-      #   py = [py, - MAX_F].max
-      # end
-      potential += px + py
+      d = distance(p)
+      potential += EPS * ((RM / d) ** 12 - 2 * (RM / d) ** 6)
     end
     potential
   end
