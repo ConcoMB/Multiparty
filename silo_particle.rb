@@ -28,7 +28,7 @@ class SiloParticle
   # Fn = −Kn ξ N
   # Ft = -Kt ξ [Rrel . t] t
   def force(particles)
-    fx = 0
+    fx = 0.0
     fy = M * G
     particles.select { |p| distance(p) <= r * 2.5 && p.id != id }.each do |p|
       xi = r + p.r - distance(p)
@@ -57,6 +57,8 @@ class SiloParticle
     #   # xi = 0 if xi < 0 || xi > 1
     #   fy += - KN * xi
     # end
+    puts "#{fx}, #{fy}"
+
     if x <= r
       fx += - KN * (x - r) 
     elsif x >= W - r
@@ -69,8 +71,8 @@ class SiloParticle
     self.fy = fy
 
     puts "#{fx}, #{fy}"
-    fx = 0 if fx == Float::NAN
-    fy = 0 if fy == Float::NAN
+    fx = 0 if fx.nan?
+    fy = 0 if fy.nan?
     if fx < 0
       self.fx = [fx, MAX_F].min 
     else
