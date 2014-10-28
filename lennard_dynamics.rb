@@ -17,7 +17,8 @@ def calculate(particles, n, delta_t, file_name)
 
   @energy_file = File.open("./files/energy#{n}_#{delta_t}.txt", 'w') 
   v_mid_file = File.open("./files/velocity_mid#{n}_#{delta_t}.txt", 'w') 
-  v_end_file = File.open("./files/velocity_end#{n}_#{delta_t}.txt", 'w') 
+  v_end_file = File.open("./files/velocity_end#{n}_#{delta_t}.txt", 'w')
+  v_init_file = File.open("./files/velocity_beg#{n}_#{delta_t}.txt", 'w') 
   @amount_file = File.open("./files/amounts#{n}_#{delta_t}.txt", 'w')
   @t_amounts = 0
   particles_old = particles
@@ -29,7 +30,7 @@ def calculate(particles, n, delta_t, file_name)
     vy = p.vy + @delta_t / p.m * p.fy
     LennardJonesParticle.new(p.id, x, y, vx, vy)
   end
-
+  print_v(particles, v_init_file)
   particles_new = []
   print(particles, file)
   print(particles_current, file)
