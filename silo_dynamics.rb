@@ -57,7 +57,7 @@ def calculate(particles, walls, delta_t, l, w, out_file)
       vy = (y - old_p.y) / (2 * @delta_t)
       particles_new << SiloParticle.new(p.id, p.r, x, y, vx, vy)
     end
-    particles_new.select! { |p| p.y > - 20 }
+    # particles_new = particles_new.select { |p| p.y > 0 }
     print(particles_new, walls, file)
     particles_old = particles_current
     particles_current = particles_new
@@ -75,10 +75,10 @@ def print(particles, walls, file)
   @tp += 1
   return if @tp < @tp_tresh
   @tp = 0
-  max_v = particles.map { |p| p.v_2 }.max
+  max_v = particles.reject { |p| p.v_2.nan? }.map(&:v_2).max
   file.write("#{particles.size + walls.size + 2}\nR\tG\tB\tr\tx\ty\n0\t1\t0\t#{WALL_R}\t#{-X_MARGIN}\t#{-Y_MARGIN}\n0\t1\t0\t#{WALL_R}1\t#{@w + X_MARGIN}\t#{@l + Y_MARGIN}\n")
-  particles.each {|p| file.write("#{red(p, max_v)}\t0\t#{blue(p, max_v)}\t#{p.r}\t#{p.x}\t#{p.y}\n") } 
-  walls.each {|p| file.write("0\t1\t0\t#{WALL_R}\t#{p.x}\t#{p.y}\n") } 
+  particles.each {|p| file.write("#{red(p, max_v)}\t0\t#{blue(p, max_v)}\t#{p.r}\t#{p.x}\t#{p.y}\n") }
+  walls.each {|p| file.write("0\t1\t0\t#{WALL_R}\t#{p.x}\t#{p.y}\n") }
 end
 
 def red(particle, max_v)
