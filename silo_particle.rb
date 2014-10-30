@@ -2,12 +2,10 @@ class SiloParticle
 
   attr_accessor :id, :r, :x, :y, :vx, :vy, :fx, :fy, :m
 
-  KN = 10 ** 3
-  KT = 2 * KN
+  KN = 10 ** 5
+  KT = 0 # KN / 10
   M = 0.01
   G = - 10
-
-  MAX_F = 5
 
   def initialize(id, r, x, y, vx = 0, vy = 0, wall = false)
     self.id = id
@@ -17,13 +15,6 @@ class SiloParticle
     self.vx = vx
     self.vy = vy
     self.m = M
-    # unless wall
-      # d = r - r / 10
-      # self.x = d if x < d
-      # self.x = W - d if x > W - d
-      # self.y = r if y < r && y >= 0 && (x - r < D_OFFSET || x + r > D + D_OFFSET)
-      # self.y = L  if y > L
-    # end
   end
 
   # Fn = −Kn ξ N
@@ -53,13 +44,41 @@ class SiloParticle
       fy += fn * eny + ft * enx
     end
 
-    if x <= r
-      fx += - KN * (x - r)
-    elsif x >= W - r
-      fx += - KN * (x - (W - r))
+    if x <= r && y < L && y > 0
+      d = x
+      xi = (x - r)
+      enx = (0 - x) / d
+      eny = (y - y) / d
+      en = [enx, eny]
+      et = [-eny, enx]
+      rrel = [vx, vy]
+      rrelt = rrel[0] * et[0] + rrel[1] * et[1]
+      fx += - KN * xi
+      fy += - KT * xi * rrelt
+    elsif x >= W - r && y < L && y > 0
+      d = W - x
+      xi = (x - (W - r))      
+      enx = (W - x) / d
+      eny = (y - y) / d
+      en = [enx, eny]
+      et = [-eny, enx]
+      rrel = [vx, vy]
+      rrelt = rrel[0] * et[0] + rrel[1] * et[1]
+      fx += - KN * xi
+      fy += - KT * xi * rrelt    
     end
     if y <= r && (x - r < D_OFFSET || x + r > D + D_OFFSET)
-      fy += - KN * (y - r)
+      d = y
+      # xi = r - d
+      xi = (y - r)
+      enx = (x - x) / d
+      eny = (0 - y) / d
+      en = [enx, eny]
+      et = [-eny, enx]
+      rrel = [vx, vy]
+      rrelt = rrel[0] * et[0] + rrel[1] * et[1]
+      fy += - KN * xi
+      fx += KT * xi * rrelt
     end
     self.fx = fx
     self.fy = fy
@@ -87,6 +106,10 @@ class SiloParticle
 
   def distance(p)
     Math.sqrt((x - p.x) ** 2 + (y - p.y) ** 2)
+  end
+
+  def cinetic
+    m * v_2 / 2
   end
 
 end

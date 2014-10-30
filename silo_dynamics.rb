@@ -6,15 +6,17 @@ Y_MARGIN = 40
 WALL_R = 0.3
 DELTA_PRINT = 0.1
 
-def calculate(particles, walls, delta_t, l, w, out_file)
+def calculate(particles, walls, delta_t, l, w, out_file, energy)
   @l = l
   @w = w
   t = 0
   @tp = 0
+  @energy = energy
+  @energy_file = File.new("files/energy_#{particles.size}", 'w') if energy
   if delta_t
     @delta_t = delta_t
   else
-    @delta_t = 0.01 * Math.sqrt(SiloParticle::M / SiloParticle::KN)
+    @delta_t = 0.1 * Math.sqrt(SiloParticle::M / SiloParticle::KN)
   end
   @tp_tresh = DELTA_PRINT / @delta_t
   @delta_t_2 = @delta_t ** 2
@@ -30,8 +32,8 @@ def calculate(particles, walls, delta_t, l, w, out_file)
     SiloParticle.new(p.id, p.r, x, y, vx, vy)
   end
   particles_new = []
-  any_particle_in_silo = true
-  while any_particle_in_silo do
+  cut_condition = true
+  while cut_condition do
   # (1..100).each do
     particles_current.each { |p| p.force(particles_current) }
     particles_current.each_with_index do |p, i|
@@ -64,8 +66,12 @@ def calculate(particles, walls, delta_t, l, w, out_file)
     particles_new = []
     t += @delta_t
     puts t
+    # puts "#{particles_current.first.v} #{particles_current.last.v}"
+    # puts particles_current.first.vy
     # puts "#{particles_old.first.fx} #{particles_old.first.fy}"
-    any_particle_in_silo = particles_current.any? { |p| p.y > 0 }
+    if t > 1
+      # cut_condition = particles_current.any? { |p| p.v > 1 }
+    end
   end
 
   file.close
@@ -79,6 +85,8 @@ def print(particles, walls, file)
   file.write("#{particles.size + walls.size + 2}\nR\tG\tB\tr\tx\ty\n0\t1\t0\t#{WALL_R}\t#{-X_MARGIN}\t#{-Y_MARGIN}\n0\t1\t0\t#{WALL_R}1\t#{@w + X_MARGIN}\t#{@l + Y_MARGIN}\n")
   particles.each {|p| file.write("#{red(p, max_v)}\t0\t#{blue(p, max_v)}\t#{p.r}\t#{p.x}\t#{p.y}\n") }
   walls.each {|p| file.write("0\t1\t0\t#{WALL_R}\t#{p.x}\t#{p.y}\n") }
+  cinetic = particles.reduce(0) { |a,e| a += e.cinetic }  if @energy
+  @energy_file.write("#{cinetic}\n")  if @energy
 end
 
 def red(particle, max_v)

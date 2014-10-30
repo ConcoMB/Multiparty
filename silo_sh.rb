@@ -24,7 +24,7 @@ raise new Exception 'pecheaste los parametros' if L <= W || L <= D || W <= D || 
 if D > 0
   R = D.to_f / 10
 else
-  R = 1
+  R = 0.5
 end
 # initialize(id, r, x, y, vx, vy, ax, ay)
 walls = (0..L).step(0.5).map { |i| SiloParticle.new(-1, R, 0 - R, i, 0, 0, true) } +
@@ -45,9 +45,11 @@ particles = []
   end
 end
 
+puts "Particulas: #{particles.size}"
+
 # particles = [SiloParticle.new(1, R, 10, 2), SiloParticle.new(2, R, 9, 4)]
-# particles = [SiloParticle.new(1, R, 2, 5), SiloParticle.new(2, R, 2, 2)]
-# particles = [SiloParticle.new(1, R, 9, 15, -1)]
+# particles = [SiloParticle.new(1, R, 5, 5, 2, 0), SiloParticle.new(2, R, 10, 6.95, -2, 0)]
+# particles = [SiloParticle.new(1, R, 18, 3, 2, 10)]
 
 
 delta_t = opts[:delta_t] ? opts[:delta_t].to_f : nil
@@ -55,4 +57,4 @@ delta_t = opts[:delta_t] ? opts[:delta_t].to_f : nil
 # walls = []
 # particles = [SiloParticle.new(-1, 1, 0, 0), SiloParticle.new(1, 1, 1, 1)]
 
-calculate(particles, walls, delta_t, L, W, opts[:out_file])
+calculate(particles, walls, delta_t, L, W, opts[:out_file], opts[:energy] == 'true')
