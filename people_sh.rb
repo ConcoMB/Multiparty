@@ -57,33 +57,33 @@ end
 #   end
 # end
 
-# (5..15).each do |i|
+# (1..11).each do |i|
 #   particles << PeopleParticle.new(id, 0, 6, i, false, 0, 0, vd = 2)
 #   id += 1
 # end
-# (6..14).each do |i|
+# (2..10).each do |i|
 #   particles << PeopleParticle.new(id, 0, 7, i, false, 0, 0, vd = 2)
 #   id += 1
 # end
-# (7..13).each do |i|
+# (3..9).each do |i|
 #   particles << PeopleParticle.new(id, 0, 8, i, false, 0, 0, vd = 2)
 #   id += 1
 # end
-# (8..12).each do |i|
+# (4..8).each do |i|
 #   particles << PeopleParticle.new(id, 0, 9, i, false, 0, 0, vd = 2)
 #   id += 1
 # end
-# (9..11).each do |i|
+# (5..7).each do |i|
 #   particles << PeopleParticle.new(id, 0, 10, i, false, 0, 0, vd = 2)
 #   id += 1
 # end
-# (10..10).each do |i|
+# (6..6).each do |i|
 #   particles << PeopleParticle.new(id, 0, 11, i, false, 0, 0, vd = 2)
 #   id += 1
 # end
 # n = particles.size
 # puts n
-# (1..N).each do
+# (1..36).each do
 #   is_inserted = false
 #   while !is_inserted do
 #     x, y = random_pos(id) 
@@ -96,9 +96,6 @@ end
 #     end
 #   end
 # end
-
-
-
 delta_t = opts[:delta_t] ? opts[:delta_t].to_f : nil
 
 #   def initialize(id, color, x, y, vx = 0, vy = 0)
