@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\title{Off Latice 3D - Aut\'omatas celulares}
+\author{Conrado Mader Blanco }
+\date{Diciembre 2014}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducc\'on}
+
+\par En el siguiente paper se describe el trabajo realizado a modo de extensi\'on en tres dimensiones del estudio realizado por Tam\'as vicsek, Andr\'as Czir\'ok, Eshel Ben-Jacob y Inon Cohen and Ofer Shochet sobre la emergencia de sistemas de moci\'on autoordenados con interacci\'on con motivaci\'on biol\'ogica.
+\par En nuestro modelo las particulas se mueven a una velocidad constante y en cada paso temporal se define la direcci\'on para cada una basada en la direcci\'on de sus vecinas, con una pequeña perturbaci\'on ($\eta$)
+\\
+\begin{center}
+\rule{4cm}{0.4pt}
+\end{center}
+\section{Descripci\'on del modelo}
+\par
+El modelo representa part\'iculas que se mueven en tres dimesiones, posicionadas en una caja de $W * H * D$. Estas comienzan en una posici\'on y direcci\'on aleatoria en el sistema, pero con velocidad constante $v = 0.03$. El sistema cuenta con condiciones de peri\'odicas de contorno, es decir, si una part\'icula se mueve m\'as all\'a de alg\'un l\'imite, aparece por el l\'imite opuesto.
+\par La posici\'on de las part\'iculas viene dada por tres variables: $x$, $y$ y $z$, mientras que la velocidad esta representada por un modulo: $v$,  y dos angulos: $\theta \in [0, \pi]$ y $\phi \in [0, 2\pi]$.
+\par
+En cada paso temporal de la simulaci\'on se calcula la nueva posici\'on de cada part\'icula basado en su posici\'on actual, la velocidad y direcci\'on, seg\'un la formula:
+\begin{equation}
+r_i (t + \Delta t) = r_i (t) + v_i \Delta t
+\end{equation}
+\par 
+Para cada dimensi\'on, en donde $r_i$ corresponde a $x$, $y$, $z$ en cada caso, y $v_i$ corresponde a $v_x$, $v_y$, $v_z$, donde:
+\begin{equation}
+v_x = v \sin \theta \cos \phi 
+\end{equation}
+\begin{equation}
+v_y = v \sin \theta \sin \phi 
+\end{equation}
+\begin{equation}
+v_z = v \cos \theta 
+\end{equation}
+\par
+Adem\'as de calcular la posici\'on para cada part\'icula, se recalcula la direcci\'on definida por $\theta$ y $\phi$ basada en los vecinos de \'esta, es decir, las part\'iculas que est\'an a menos de $r$ distancia, seg\'un las f\'ormulas:
+\begin{equation}
+\theta (t + \Delta t) = \langle \theta (t) \rangle_r + \Delta \theta
+\end{equation}
+\begin{equation}
+\phi (t + \Delta t) = \langle \phi (t) \rangle_r + \Delta \phi
+\end{equation}
+Donde $\langle \theta (t) \rangle_r$ denota el promedio de los angulos $\theta$ de los vecinos m\'as la part\'icula en cuesti\'on dado por la f\'ormula:
+\begin{equation}
+arctg[\langle sin(\theta (t))\rangle_r / \langle cos(\theta(t))\rangle_r]
+\end{equation}
+y $\langle \phi (t) \rangle_r$ representa lo mismo para los \'angulos $\phi$. Mientras que $\Delta \theta$ y $\Delta \phi$ representan un ruido aleatorio elegido uniformemente en el rango $[-\eta/2, \eta/2]$
+\par
+El \'indice $v_a$ indica la polarización del sistema, es decir, que tan uniformes son las direcciones de las particulas, dado por la siguiente ecuaci\'on:
+\begin{equation}
+v_a = \frac{1}{Nv} \left|\sum_{i=0}^{N} v_i \right|
+\end{equation}
+En donde cuanto m\'as desorden hay en las direcciones de las part\'iculas $v_a$ tiende a cero, mientras que cuanto m\'as orden, tiende a 1.
+
+\section{Pruebas realizadas}
+
+\par Las pruebas se realizaron con distintos valores de radio de interacci\'on ($s$), ruido ($\eta$), dimensiones de la caja ($H$, $W$ y $D$) y cantidad de part\'iculas ($N$).
+\par Para que los resultados sean comparables con los que se observan en el estudio en 2D, debemos cambiar algunos \'indices para adaptarlos a una dimensi\'on m\'as. M\'as concretamente, $s$ t $N$ deberian ser:
+\begin{equation}
+N_{3d} = N_{2d}^{2/3} 
+\end{equation}
+\begin{equation}
+s_{3d} = s_{2d}^{2/3}
+\end{equation}
+\par
+En las simulaciones se muestran cada una de las par\'iculas con forma esf\'erica. A medidas que estan se mueven dejan una estela que nos muestra por donde pasaron en los pasos anteriores. Se representan las particulas con colores segu\'un la direcci\'on en la que se est\'an moviendo. Cuanto m\'as se mueven en el eje x, m\'as rojas son, mientras que son m\'as verdes si se mueven m\'as en el eje y, y m\'as azules si lo hacen en el eje z.
+
+\par En la figura \ref{cube} se puede ver como se ven los resultados de la simulaci\'on.
+\par En el gr\'afico \ref{chart} podemos observar como crece m\'as lentamente el \'indice $va$ cuanta menor es la densidad. Las pruebas para ese gr\'afico fueron realizados en un cubo de 25x25x25 con un $\eta = 0.1$ y un $s = 2$.
+\par En el gr\'afico \ref{chart2} podemos observar como varia el \'indice $va$ seg\'un el $\eta$ escogido.
+
+\par En la figura \ref{chart3} vemos como el crecimiento de $v_a$ es m\'as acelerado cuanto mayor $s$.
+
+\section{Referencias}
+
+\begin{itemize}
+\item Novel type of phase transition in a system of self-driven particles - Tam\'as vicsek, Andr\'as Czir\'ok, Eshel Ben-Jacob, Inon Cohen and Ofer Shochet.
+\item Clases de Daniel Parisi - ITBA - Simulaci\'on de sistemas multipart\'iculas.
+\end{itemize}
+
+\section{Anexo}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{cube.png}
+\caption{Ejemplo de c\'omo se ven las part\'iculas en la simulaci\'on en un estado ordenado ($v_a > 0.9$)}
+\label{cube}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{disorder.png}
+\caption{Ejemplo de c\'omo se ven las part\'iculas en la simulaci\'on en un estado desordenado  ($v_a \simeq 0.4$)}
+\label{cube}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{clusters.png}
+\caption{Ejemplo de c\'omo se ven las part\'iculas en la simulaci\'on en un estado parcialmente ordenado, observandose grupos de part\'iculas que se mueven en la misma disreccion  ($v_a \simeq 0.6$)}
+\label{cube}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{image.png}
+\caption{Comparacion de $v_a$ sobre el tiempo para diferentes cantidades de part\'iculas en un cubo de $25x25x25$ $s = 2$ y $\eta = 0.1$}
+\label{chart}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{image2.png}
+\caption{Comparacion de $v_a$ sobre el tiempo para diferentes valores de $\eta$ en un cubo de $25x25x25$, $s=2$ y $N = 300$}
+\label{chart2}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{image2.png}
+\caption{Comparacion de $v_a$ sobre el tiempo para diferentes valores de $s$ en un cubo de $25x25x25$, $eta=0.1$ y $N = 300$}
+\label{chart3}
+\end{figure}
+
+
+\end{document}
